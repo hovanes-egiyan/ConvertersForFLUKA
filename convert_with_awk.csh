@@ -1,0 +1,1 @@
+awk 'BEGIN{pwrSum=0; print "X(cm)      , Y(cm)      , Z(cm)      ,  Power(W/mm^3)"} (NF>0) {power=5000*$4*0.001; print $1 "      , " $2 "     , " , $3 "     , "  power ; pwrSum+=power  } (NF==0) {print $0} END {} ' KPSKPTBOXBODY063022_21.bnn.txt.table > ! test_file
