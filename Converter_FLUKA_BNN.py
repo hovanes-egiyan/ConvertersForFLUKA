@@ -17,22 +17,26 @@ class Converter_FLUKA_BNN(object):
         '''
         Constructor
         '''
+        
+        self.inputFileName = None
+        self.outputFileName = None 
+        
         self.inFileHandle = None 
         self.outFileHandle = None
         
         self.numberOfHeaderLines = 8;
         
         
-        self.nX = 88
-        self.nY = 540 
-        self.nZ = 265 
+        self.nX = 300
+        self.nY = 72 
+        self.nZ = 100 
         
-        self.xMin = -2.2
-        self.xMax = +2.2
-        self.yMin = -13.5
-        self.yMax = +13.5
-        self.zMin = +78.
-        self.zMax = +131.
+        self.xMin = 0
+        self.xMax = +15.0
+        self.yMin = -3.1416
+        self.yMax = +3.1416
+        self.zMin = 0.0
+        self.zMax = +200.
         
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
         
@@ -40,7 +44,8 @@ class Converter_FLUKA_BNN(object):
 
 
     def readFile(self, inFileName):
-        print "Opening file {0} for reading".format( inFileName)            
+        print "Opening file {0} for reading".format( inFileName)       
+        self.inputFileName =  inFileName    
         # Open input file
         try :
             self.inFileHandle = open( inFileName, "r" )
@@ -71,10 +76,11 @@ class Converter_FLUKA_BNN(object):
             
         return 
      
-    def writeFile(self, outFileName = None ):         
+    def writeFile(self, outFileName = None ):    
+        self.outputFileName = outFileName     
         #Open output file
-        if( outFileName == None ) :
-            outFileName2Use = inFileName + ".table"
+        if( self.outputFileName == None ) :
+            outFileName2Use = self.inputFileName + ".table"
         else :
             outFileName2Use = outFileName 
             

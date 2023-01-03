@@ -44,7 +44,7 @@ class clfOptions:
                            default="InFile.xml", help="Define input file name to be updated" )
         parser.add_option( "-2", "--f2", 
                            action="store", dest="f2", type="string", metavar="OutFile", 
-                           default="OutFile.xml", help="Define new output file" )
+                           default=None, help="Define new output file" )
         
         (opts, args) = parser.parse_args( argList )
         
