@@ -23,16 +23,16 @@ class Converter_FLUKA_BNN(object):
         self.numberOfHeaderLines = 8;
         
         
-        self.nX = 88
-        self.nY = 540 
-        self.nZ = 265 
+        self.nX = 280
+        self.nY = 140 
+        self.nZ = 215 
         
-        self.xMin = -2.2
-        self.xMax = +2.2
-        self.yMin = -13.5
-        self.yMax = +13.5
-        self.zMin = +78.
-        self.zMax = +131.
+        self.xMin = -70.0
+        self.xMax = +70.0
+        self.yMin = -70.0
+        self.yMax = +70.0
+        self.zMin = -60.0
+        self.zMax = +370.0
         
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
         
