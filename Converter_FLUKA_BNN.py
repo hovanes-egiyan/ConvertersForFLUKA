@@ -26,18 +26,69 @@ class Converter_FLUKA_BNN(object):
         
         self.numberOfHeaderLines = 8;
         
+#         Vitaly's coarse binning
+#         self.nX = 280
+#         self.nY = 140 
+#         self.nZ = 215 
+#         
+#         self.xMin = -70.
+#         self.xMax = +70.
+#         self.yMin = -70.
+#         self.yMax = +70.
+#         self.zMin = -60.
+#         self.zMax = +370.
         
-        self.nX = 300
-        self.nY = 72 
-        self.nZ = 100 
+# Viltay's fine binning         
+#         self.nX = 88
+#         self.nY = 540 
+#         self.nZ = 265
+#         
+#         self.xMin = -2.2
+#         self.xMax = +2.2
+#         self.yMin = -13.5
+#         self.yMax = +13.5
+#         self.zMin = +78.
+#         self.zMax = +131.
+
+# Viltay's coarse binning         
+#        self.nX = 88
+#        self.nY = 96 
+#        self.nZ = 460
+         
+#        self.xMin = -22.
+#        self.xMax = +22.
+#        self.yMin = -24.
+#        self.yMax = +24.
+#        self.zMin = +35.
+#        self.zMax = +265.
+
+ 
+# Pavel's fine binning for cylindrical grid         
+        self.nX = 320
+        self.nY = 144 
+        self.nZ = 188
         
-        self.xMin = 0
-        self.xMax = +15.0
-        self.yMin = -3.1416
-        self.yMax = +3.1416
-        self.zMin = 0.0
-        self.zMax = +200.
-        
+        self.xMin = 0.0      # rMin
+        self.xMax = 8.0      # rMAx
+        self.yMin = -3.1416  # phiMin
+        self.yMax = +3.1416  # phiMax
+        self.zMin = 0.       # zMin
+        self.zMax = 94.0     # zMax
+
+# Pavel's fine binning for rectangular grid       
+#        self.nX = 401
+#        self.nY = 401 
+#        self.nZ = 188
+#        
+#        self.xMin = -10.16  # xMin
+#        self.xMax = +10.16  # xMAx
+#        self.yMin = -12.16  # yMin
+#        self.yMax =  +8.16  # yMax
+#        self.zMin = 0.      # zMin
+#        self.zMax = 94.0    # zMax
+
+ 
+
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
         
         return
