@@ -11,6 +11,7 @@ import sys, string, getopt, os
 from optparse import OptionParser
 
 from Converter_FLUKA_BNN import Converter_FLUKA_BNN
+from CylindricalConverterKLCPS import CylindricalConverterKLCPS
 
 #===============================================================================
 # Class to handle command line options
@@ -45,12 +46,17 @@ class clfOptions:
         parser.add_option( "-2", "--f2", 
                            action="store", dest="f2", type="string", metavar="OutFile", 
                            default=None, help="Define new output file" )
+        parser.add_option( "-d", "--datatype", 
+                           action="store", dest="dataType", type="string", metavar="DataType", 
+                           default="PavelCyl", help="Data type in the input file" )
         
         (opts, args) = parser.parse_args( argList )
         
         # Assign the elements of the dictionary to the parsed option values
         self.optionDict["InFile"]  = opts.f1
         self.optionDict["OutFile"] = opts.f2
+        self.optionDict["DataType"] = opts.dataType
+        
         return
         
         
@@ -80,7 +86,12 @@ if __name__ == '__main__':
     
     print "Input file is {0} , output file is {1}".format(inFileName, outFileName )  
     
-    converter = Converter_FLUKA_BNN(   )
+    if( progOpts.getOption("DataType") == "PavelCyl" ):
+        print "Pavel's cylindrical coordinate system is expected now."
+        converter = CylindricalConverterKLCPS()
+    else:
+        converter = Converter_FLUKA_BNN()
+        
     converter.readFile( inFileName )
     converter.writeFile(outFileName)
     

@@ -150,4 +150,5 @@ class Converter_FLUKA_BNN(object):
                     self.outFileHandle.write( "{0}\t{1}\t{2}\t\t{3} \n".format( x, y, z, self.data[ix,iy,iz] ) )
         
         self.outFileHandle.close()
+        return
             
