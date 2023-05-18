@@ -12,6 +12,8 @@ from optparse import OptionParser
 
 from Converter_FLUKA_BNN import Converter_FLUKA_BNN
 from CylindricalConverterKLCPS import CylindricalConverterKLCPS
+from RectangularConverterKLCPS import RectangularConverterKLCPS
+
 
 #===============================================================================
 # Class to handle command line options
@@ -89,6 +91,9 @@ if __name__ == '__main__':
     if( progOpts.getOption("DataType") == "PavelCyl" ):
         print "Pavel's cylindrical coordinate system is expected now."
         converter = CylindricalConverterKLCPS()
+    elif( progOpts.getOption("DataType") == "PavelRec" ):
+        print "Pavel's rectangular coordinate system is expected now."        
+        converter = RectangularConverterKLCPS()
     else:
         converter = Converter_FLUKA_BNN()
         

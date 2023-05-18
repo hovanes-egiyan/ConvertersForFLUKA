@@ -25,6 +25,8 @@ class Converter_FLUKA_BNN(object):
         self.outFileHandle = None
         
         self.numberOfHeaderLines = 8;
+
+        self.gev2kw = 5.0       # Conversion constant from GeV/cm^3/sec for 5uA and 12Gev to KW/cm^3.
         
 #         Vitaly's coarse binning
 #         self.nX = 280
@@ -147,7 +149,7 @@ class Converter_FLUKA_BNN(object):
                     x = self.xMin + (ix+0.5) * ( self.xMax - self.xMin ) / self.nX
                     y = self.yMin + (iy+0.5) * ( self.yMax - self.yMin ) / self.nY
                     z = self.zMin + (iz+0.5) * ( self.zMax - self.zMin ) / self.nZ
-                    self.outFileHandle.write( "{0}\t{1}\t{2}\t\t{3} \n".format( x, y, z, self.data[ix,iy,iz] ) )
+                    self.outFileHandle.write( "{0} , \t{1} , \t{2} , \t{3}\n".format( x, y, z, self.gev2kw*self.data[ix,iy,iz] ) )
         
         self.outFileHandle.close()
         return
