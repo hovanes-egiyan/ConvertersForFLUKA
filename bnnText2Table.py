@@ -13,6 +13,7 @@ from optparse import OptionParser
 from Converter_FLUKA_BNN import Converter_FLUKA_BNN
 from CylindricalConverterKLCPS import CylindricalConverterKLCPS
 from RectangularConverterKLCPS import RectangularConverterKLCPS
+from CylindricalConverterCPSHC import CylindricalConverterCPSHC
 
 
 #===============================================================================
@@ -89,11 +90,15 @@ if __name__ == '__main__':
     print "Input file is {0} , output file is {1}".format(inFileName, outFileName )  
     
     if( progOpts.getOption("DataType") == "PavelCyl" ):
-        print "Pavel's cylindrical coordinate system is expected now."
+        print "Pavel's KLCPS cylindrical coordinate system is expected now."
         converter = CylindricalConverterKLCPS()
     elif( progOpts.getOption("DataType") == "PavelRec" ):
-        print "Pavel's rectangular coordinate system is expected now."        
+        print "Pavel's KLCPS rectangular coordinate system is expected now."        
         converter = RectangularConverterKLCPS()
+    elif( progOpts.getOption("DataType") == "PavelHC" ):
+        print "Pavel's HC CPS cylindrical coordinate system is expected now."        
+        converter = CylindricalConverterCPSHC()
+        
     else:
         converter = Converter_FLUKA_BNN()
         

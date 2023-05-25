@@ -15,7 +15,7 @@ class RectangularConverterKLCPS(Converter_FLUKA_BNN):
     Pavel uses for KLCPS project. 
     '''
     def __init__( self ):
-        print "Using converter for Pavel's rectangular reference system"
+        print "Using converter for Pavel's rectangular reference system for Hall D"
         super(RectangularConverterKLCPS, self).__init__()
         self.nX = 401           #nR
         self.nY = 401           #nPhi
