@@ -152,8 +152,6 @@ class Converter_FLUKA_BNN(object):
                     self.outFileHandle.write( "{0} , \t{1} , \t{2} , \t{3}\n".format( x, y, z, self.gev2kw*self.data[ix,iy,iz] ) )
         
         self.outFileHandle.close()
-<<<<<<< HEAD
-=======
+
         return
->>>>>>> 5f2d2f20103ed768ffdf8e423ddef79bfadeee52
             
