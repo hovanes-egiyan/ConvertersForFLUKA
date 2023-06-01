@@ -14,6 +14,7 @@ from Converter_FLUKA_BNN import Converter_FLUKA_BNN
 from CylindricalConverterKLCPS import CylindricalConverterKLCPS
 from RectangularConverterKLCPS import RectangularConverterKLCPS
 from CylindricalConverterCPSHC import CylindricalConverterCPSHC
+from CylindricalConverterVitalyCPS import CylindricalConverterVitalyCPS
 
 
 #===============================================================================
@@ -98,6 +99,10 @@ if __name__ == '__main__':
     elif( progOpts.getOption("DataType") == "PavelHC" ):
         print "Pavel's HC CPS cylindrical coordinate system is expected now."        
         converter = CylindricalConverterCPSHC()
+    elif( progOpts.getOption("DataType") == "VitalyCyl" ):
+        print "Vitaly's CPS cylindrical coordinate system is expected now."
+        converter = CylindricalConverterVitalyCPS()
+        
         
     else:
         converter = Converter_FLUKA_BNN()
