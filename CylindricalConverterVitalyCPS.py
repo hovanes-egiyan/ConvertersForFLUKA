@@ -21,8 +21,8 @@ class CylindricalConverterVitalyCPS(Converter_FLUKA_BNN):
         self.nY = 80            #nPhi
         self.nZ = 680           #nZ
         
-        self.xMin = 3.1750E-01  # rMin
-        self.xMax = 1.1318E+01  # rMax
+        self.xMin = 2.9250E-01  # rMin
+        self.xMax = 1.1292E+01  # rMax
         self.yMin = -math.pi    # phiMin
         self.yMax = +math.pi    # phiMax
         self.zMin = 35.0        # zMin
