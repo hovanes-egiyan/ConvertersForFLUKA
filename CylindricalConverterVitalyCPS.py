@@ -20,14 +20,25 @@ class CylindricalConverterVitalyCPS(Converter_FLUKA_BNN):
         self.nX = 440           #nR
         self.nY = 80            #nPhi
         self.nZ = 680           #nZ
-        
+       
         self.xMin = 2.9250E-01  # rMin
         self.xMax = 1.1292E+01  # rMax
         self.yMin = -math.pi    # phiMin
         self.yMax = +math.pi    # phiMax
         self.zMin = 35.0        # zMin
         self.zMax = 375.0       # zMax
-        
+
+# Bins for testing rectangular vs cylindrical
+#        self.nX = 240           #nR
+#        self.nY = 146           #nPhi
+#        self.nZ = 120           #nZ
+#        
+#        self.xMin = 0.2925      # rMin
+#        self.xMax = 6.2925      # rMax
+#        self.yMin = -3.1416    # phiMin
+#        self.yMax = +3.1416     # phiMax
+#        self.zMin = 90.         # zMin
+#        self.zMax = 150.        # zMax      
         
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
 

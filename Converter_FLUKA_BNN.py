@@ -4,7 +4,7 @@ Created on Mar 24, 2022
 @author: Hovanes Egiyan
 '''
 
-import sys, string, numpy
+import sys, string, numpy, math
 
 class Converter_FLUKA_BNN(object):
     '''
@@ -52,6 +52,31 @@ class Converter_FLUKA_BNN(object):
 #         self.zMin = +78.
 #         self.zMax = +131.
 
+# Vitaly's new rectangular binning 
+#        self.nX = 400           #nx
+#        self.nY = 400           #nY
+#        self.nZ = 120           #nZ
+        
+#        self.xMin = -5          # xMin
+#        self.xMax = +5          # xMax
+#        self.yMin = -5          # yMin
+#        self.yMax = +5          # yMax
+#        self.zMin = 90          # zMin
+#        self.zMax = 150         # zMax
+
+# Vitaly's new cylidircal binning 
+        self.nX = 440           #nx
+        self.nY = 80            #nY
+        self.nZ = 680           #nZ
+        
+        self.xMin = 2.9250E-01          # rMin
+        self.xMax = 1.1292E+01          # rMax
+        self.yMin = -3.1416E+00         # phiMin
+        self.yMax = 3.1416E+00          # phiMax
+        self.zMin = 35          # zMin
+        self.zMax = 375         # zMax
+
+
 # Viltay's coarse binning         
 #        self.nX = 88
 #        self.nY = 96 
@@ -66,16 +91,16 @@ class Converter_FLUKA_BNN(object):
 
  
 # Pavel's fine binning for cylindrical grid         
-        self.nX = 320
-        self.nY = 144 
-        self.nZ = 188
+#        self.nX = 320
+#        self.nY = 144 
+#        self.nZ = 188
         
-        self.xMin = 0.0      # rMin
-        self.xMax = 8.0      # rMAx
-        self.yMin = -3.1416  # phiMin
-        self.yMax = +3.1416  # phiMax
-        self.zMin = 0.       # zMin
-        self.zMax = 94.0     # zMax
+#        self.xMin = 0.0      # rMin
+#        self.xMax = 8.0      # rMAx
+#        self.yMin = -3.1416  # phiMin
+#        self.yMax = +3.1416  # phiMax
+#        self.zMin = 0.       # zMin
+#        self.zMax = 94.0     # zMax
 
 # Pavel's fine binning for rectangular grid       
 #        self.nX = 401
@@ -89,7 +114,6 @@ class Converter_FLUKA_BNN(object):
 #        self.zMin = 0.      # zMin
 #        self.zMax = 94.0    # zMax
 
- 
 
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
         
