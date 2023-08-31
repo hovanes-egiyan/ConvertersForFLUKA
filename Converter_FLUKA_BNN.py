@@ -26,96 +26,20 @@ class Converter_FLUKA_BNN(object):
         
         self.numberOfHeaderLines = 8;
 
-        self.gev2kw = 5.0       # Conversion constant from GeV/cm^3/sec for 5uA and 12Gev to KW/cm^3.
+        self.gev2kw = 5.0        # Conversion constant from GeV/cm^3/sec for 5uA and 12Gev to KW/cm^3.
         
-#         Vitaly's coarse binning
-#         self.nX = 280
-#         self.nY = 140 
-#         self.nZ = 215 
-#         
-#         self.xMin = -70.
-#         self.xMax = +70.
-#         self.yMin = -70.
-#         self.yMax = +70.
-#         self.zMin = -60.
-#         self.zMax = +370.
+        self.nX = None           # nx
+        self.nY = None           # nY
+        self.nZ = None           # nZ
         
-# Viltay's fine binning         
-#         self.nX = 88
-#         self.nY = 540 
-#         self.nZ = 265
-#         
-#         self.xMin = -2.2
-#         self.xMax = +2.2
-#         self.yMin = -13.5
-#         self.yMax = +13.5
-#         self.zMin = +78.
-#         self.zMax = +131.
+        self.xMin = None         # rMin
+        self.xMax = None         # rMax
+        self.yMin = None         # phiMin
+        self.yMax = None         # phiMax
+        self.zMin = None         # zMin
+        self.zMax = None         # zMax
 
-# Vitaly's new rectangular binning 
-#        self.nX = 400           #nx
-#        self.nY = 400           #nY
-#        self.nZ = 120           #nZ
-        
-#        self.xMin = -5          # xMin
-#        self.xMax = +5          # xMax
-#        self.yMin = -5          # yMin
-#        self.yMax = +5          # yMax
-#        self.zMin = 90          # zMin
-#        self.zMax = 150         # zMax
-
-# Vitaly's new cylidircal binning 
-        self.nX = 440           #nx
-        self.nY = 80            #nY
-        self.nZ = 680           #nZ
-        
-        self.xMin = 2.9250E-01          # rMin
-        self.xMax = 1.1292E+01          # rMax
-        self.yMin = -3.1416E+00         # phiMin
-        self.yMax = 3.1416E+00          # phiMax
-        self.zMin = 35          # zMin
-        self.zMax = 375         # zMax
-
-
-# Viltay's coarse binning         
-#        self.nX = 88
-#        self.nY = 96 
-#        self.nZ = 460
-         
-#        self.xMin = -22.
-#        self.xMax = +22.
-#        self.yMin = -24.
-#        self.yMax = +24.
-#        self.zMin = +35.
-#        self.zMax = +265.
-
- 
-# Pavel's fine binning for cylindrical grid         
-#        self.nX = 320
-#        self.nY = 144 
-#        self.nZ = 188
-        
-#        self.xMin = 0.0      # rMin
-#        self.xMax = 8.0      # rMAx
-#        self.yMin = -3.1416  # phiMin
-#        self.yMax = +3.1416  # phiMax
-#        self.zMin = 0.       # zMin
-#        self.zMax = 94.0     # zMax
-
-# Pavel's fine binning for rectangular grid       
-#        self.nX = 401
-#        self.nY = 401 
-#        self.nZ = 188
-#        
-#        self.xMin = -10.16  # xMin
-#        self.xMax = +10.16  # xMAx
-#        self.yMin = -12.16  # yMin
-#        self.yMax =  +8.16  # yMax
-#        self.zMin = 0.      # zMin
-#        self.zMax = 94.0    # zMax
-
-
-        self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
+        self.data = None
         
         return
 
@@ -132,12 +56,43 @@ class Converter_FLUKA_BNN(object):
         lineNumber = 0
         iData = 0
 
+        lowLim = []
+        hiLim  = []
+        nBins  = []
+
         for inputLine in self.inFileHandle:
             lineNumber += 1
 #            print lineNumber, " ", inputLine
             if( lineNumber <= self.numberOfHeaderLines ) : 
 #                print " HEADER : " , inputLine
-                continue
+                headerElements = inputLine.split()
+                print headerElements
+                if( len(headerElements) >= 9 and headerElements[1] == "coordinate:" and  headerElements[2] == "from" ):
+                    lowLim.append( float( headerElements[3] ) )
+                    hiLim.append ( float( headerElements[5] ) )
+                    nBins.append ( int  ( headerElements[7] ) )
+                if( lineNumber == self.numberOfHeaderLines ) : 
+                    if( len(nBins)  == 3 ):
+                        self.nX = nBins[0]           #nx
+                        self.nY = nBins[1]           #nY
+                        self.nZ = nBins[2]           #nZ
+
+                        self.xMin = lowLim[0]        # rMin
+                        self.xMax = hiLim[0]         # rMax
+                        self.yMin = lowLim[1]        # phiMin
+                        self.yMax = hiLim[1]         # phiMax
+                        self.zMin = lowLim[2]        # zMin
+                        self.zMax = hiLim[2]         # zMax
+
+                        self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
+
+                    else :
+                        print "The data dimension in the header is not equal to 3. Exiting ..."
+                        raise RuntimeError
+
+                    print self.nX, self.nY, self.nZ 
+                continue 
+
             vecElements = inputLine.split()
             for data in vecElements:
                 iz = iData / ( self.nX * self.nY )

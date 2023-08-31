@@ -2,6 +2,11 @@
 '''
 Created on Mar 24, 2022
 
+This script  takes two text files from FLUKA bnn output and combines them into a single table. 
+The binning grid of the first files should be a multiple of the second one,t that is the second file should have 
+finer binning with the same edges, but the number of bins in all three dimensions of the second file should be 
+multiples of of the number of bins in the first file. 
+
 @author: Hovanes Egiyan
 '''
 
@@ -15,6 +20,7 @@ from CylindricalConverterKLCPS import CylindricalConverterKLCPS
 from RectangularConverterKLCPS import RectangularConverterKLCPS
 from CylindricalConverterCPSHC import CylindricalConverterCPSHC
 from CylindricalConverterVitalyCPS import CylindricalConverterVitalyCPS
+from GridMerger import GridMerger
 
 
 #===============================================================================
@@ -45,21 +51,25 @@ class clfOptions:
         # Python does not seem to be forward or backward compatible
         parser = OptionParser(usage = "usage: %prog [options] ")
         parser.add_option( "-1", "--f1", 
-                           action="store", dest="f1", type="string", metavar="InFile", 
-                           default="InFile.lis", help="Define input file name to be updated" )
+                           action="store", dest="f1", type="string", metavar="InFileCoarse", 
+                           default="InFileCoarse.lis", help="Define input file name with coarse binning" )
         parser.add_option( "-2", "--f2", 
-                           action="store", dest="f2", type="string", metavar="OutFile", 
+                           action="store", dest="f2", type="string", metavar="InFileFine", 
+                           default="InFileFine.lis", help="Define input file name with fine binning" )        
+        parser.add_option( "-3", "--f3", 
+                           action="store", dest="f3", type="string", metavar="OutFile", 
                            default=None, help="Define new output file" )
         parser.add_option( "-d", "--datatype", 
                            action="store", dest="dataType", type="string", metavar="DataType", 
-                           default="None", help="Data type in the input file" )
+                           default="None", help="Data type in the input files" )
         
         (opts, args) = parser.parse_args( argList )
         
         # Assign the elements of the dictionary to the parsed option values
-        self.optionDict["InFile"]  = opts.f1
-        self.optionDict["OutFile"] = opts.f2
-        self.optionDict["DataType"] = opts.dataType
+        self.optionDict["InFileCoarse"]  = opts.f1
+        self.optionDict["InFileFine"]    = opts.f2
+        self.optionDict["OutFile"]       = opts.f3
+        self.optionDict["DataType"]      = opts.dataType
         
         return
         
@@ -85,28 +95,39 @@ if __name__ == '__main__':
     # Get the global options from the clfOptions class
     progOpts = globOptions
 
-    inFileName = progOpts.getOption( "InFile" )
-    outFileName = progOpts.getOption( "OutFile" )
+    inFileCoarseName = progOpts.getOption( "InFileCoarse" )
+    inFileFineName   = progOpts.getOption( "InFileFine" )
+    outFileName      = progOpts.getOption( "OutFile" )
     
-    print "Input file is {0} , output file is {1}".format(inFileName, outFileName )  
+    print "Input file with coarse binning is {0} , Input file with fine binning is {1} , output file is {2}".format(inFileCoarseName, inFileFineName, outFileName )  
     
     if( progOpts.getOption("DataType") == "PavelCyl" ):
         print "Pavel's KLCPS cylindrical coordinate system is expected now."
-        converter = CylindricalConverterKLCPS()
+        converterCoarse = CylindricalConverterKLCPS()
+        converterFine = CylindricalConverterKLCPS()
     elif( progOpts.getOption("DataType") == "PavelRec" ):
         print "Pavel's KLCPS rectangular coordinate system is expected now."        
-        converter = RectangularConverterKLCPS()
+        converterCoarse = RectangularConverterKLCPS()
+        converterFine = RectangularConverterKLCPS()
     elif( progOpts.getOption("DataType") == "PavelHC" ):
         print "Pavel's HC CPS cylindrical coordinate system is expected now."        
-        converter = CylindricalConverterCPSHC()
+        converterCoarse = CylindricalConverterCPSHC()
+        converterFine = RectangularConverterKLCPS()
     elif( progOpts.getOption("DataType") == "VitalyCyl" ):
         print "Vitaly's CPS cylindrical coordinate system is expected now."
-        converter = CylindricalConverterVitalyCPS()
-        
-        
+        converterCoarse = CylindricalConverterVitalyCPS()
+        converterFine = CylindricalConverterVitalyCPS()
+              
     else:
-        converter = Converter_FLUKA_BNN()
+        converterCoarse = Converter_FLUKA_BNN()
+        converterFine = Converter_FLUKA_BNN()
         
-    converter.readFile( inFileName )
-    converter.writeFile(outFileName)
+        
+    converterCoarse.readFile( inFileCoarseName )
+    converterFine.readFile( inFileFineName )
+    
+    converterMerger = GridMerger( converterCoarse, converterFine )
+    converterMerger.interpolateData()
+    
+    converterMerger.writeFile(outFileName)
     

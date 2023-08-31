@@ -18,14 +18,14 @@ class RectangularConverterKLCPS(Converter_FLUKA_BNN):
         print "Using converter for Pavel's rectangular reference system for Hall D"
         super(RectangularConverterKLCPS, self).__init__()
         self.nX = 401           #nR
-        self.nY = 401           #nPhi
-        self.nZ = 188           #nZ
+        self.nY = 400           #nPhi
+        self.nZ = 228           #nZ
         
-        self.xMin = -1.0160e+01    # rMin
-        self.xMax = +1.0160e+01    # rMax
-        self.yMin = -1.2160e+01    # phiMin
-        self.yMax = +8.1600e+00    # phiMax
-        self.zMin = +0.            # zMin
+        self.xMin = -1.0250e+01    # rMin
+        self.xMax = +1.0250e+01    # rMax
+        self.yMin = -1.2000e+01    # phiMin
+        self.yMax = +8.0000e+00    # phiMax
+        self.zMin = -20.           # zMin
         self.zMax = +94.0          # zMax
                 
         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
