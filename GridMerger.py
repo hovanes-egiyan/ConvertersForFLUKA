@@ -9,6 +9,8 @@ Created on Aug 30, 2023
 
 import math
 from scipy.interpolate import LinearNDInterpolator
+from scipy.interpolate import RegularGridInterpolator
+
 import numpy as np
 
 from Converter_FLUKA_BNN import Converter_FLUKA_BNN 
@@ -58,23 +60,15 @@ class GridMerger(object):
             raise SystemExit
           
   
-#         self.nX = self.fineGrid.nX
-#         self.nY = self.fineGrid.nY 
-#         self.nZ = self.fineGrid.nZ 
-#  
-#         self.xMin = self.fineGrid.xMin
-#         self.yMin = self.fineGrid.yMin
-#         self.zMin = self.fineGrid.zMin
-#         
-#         self.xMax = self.fineGrid.xMax
-#         self.yMax = self.fineGrid.yMax
-#         self.zMax = self.fineGrid.zMax
-        
         self.coarseData = np.array(self.coarseGrid.data)
-#         self.fineData   = np.array(self.fineGrid.data)
+#        self.fineData   = np.array(self.fineGrid.data)
         
-        self.extrapolatingFunction = None
-        
+        self.interpolatingFunction = None
+        self.ipCoarseData  = None 
+        self.xMesh = None
+        self.yMesh = None
+        self.zMesh = None
+                      
         return
     
     
@@ -85,31 +79,96 @@ class GridMerger(object):
         '''
         Setup interpolation function for the coarse grid
         '''
+        print "In the function to interpolate data"
 
-        linearizedCoarseData = self.coarseData.reshape(-1)
+#        linearizedCoarseData = self.coarseData.reshape(-1)
         
         xCoarseArray=[]
         yCoarseArray=[]
         zCoarseArray=[]
         for ix in range(self.coarseGrid.nX):
-            xCoarse = self.coarseGrid.xMin + (ix+0.5) * self.coarseWidthX     
-            for iy in range(self.coarseGrid.nY):
-                yCoarse = self.coarseGrid.yMin + (iy+0.5) * self.coarseWidthY
-                for iz in range(self.coarseGrid.nZ):
-                    zCoarse = self.coarseGrid.zMin + (iz+0.5) * self.coarseWidthZ
-                    xCoarseArray.append(xCoarse)
-                    yCoarseArray.append(yCoarse)
-                    zCoarseArray.append(zCoarse)
-                                        
-        self.extrapolatingFunction = LinearNDInterpolator((xCoarseArray, yCoarseArray,zCoarseArray), linearizedCoarseData)
+            xCoarse = self.coarseGrid.xMin + (ix+0.5) * self.coarseWidthX   
+            xCoarseArray.append(xCoarse)            
+            # print "ix is {0} , xCoarse is {1}".format(ix,xCoarse)  
+        for iy in range(self.coarseGrid.nY):
+            yCoarse = self.coarseGrid.yMin + (iy+0.5) * self.coarseWidthY
+            yCoarseArray.append(yCoarse)                
+        for iz in range(self.coarseGrid.nZ):
+            zCoarse = self.coarseGrid.zMin + (iz+0.5) * self.coarseWidthZ
+            zCoarseArray.append(zCoarse)                  
+        print xCoarseArray
+        print yCoarseArray
+        print zCoarseArray
+        print "Calling interpolating function"
+#        self.interpolatingFunction = LinearNDInterpolator(list(zip(xCoarseArray, yCoarseArray,zCoarseArray)), linearizedCoarseData)
+        interpolatingFunction = RegularGridInterpolator( (xCoarseArray, yCoarseArray,zCoarseArray), self.coarseData, method='linear', bounds_error=False, fill_value=0 )
         
+        print self.coarseGrid.yMax, self.coarseGrid.yMin, self.fineGrid.nY
+        
+        # Create mesh for the interpolation
+        xFineArray = np.linspace( self.coarseGrid.xMin + 0.5*self.coarseWidthX, self.coarseGrid.xMax - 0.5*self.coarseWidthX, (self.coarseGrid.xMax - self.coarseGrid.xMin ) / self.fineWidthX )
+        yFineArray = np.linspace( self.coarseGrid.yMin + 0.5*self.coarseWidthY, self.coarseGrid.yMax - 0.5*self.coarseWidthY, (self.coarseGrid.yMax - self.coarseGrid.yMin ) / self.fineWidthX )
+        zFineArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, (self.coarseGrid.zMax - self.coarseGrid.zMin ) / self.fineWidthX )
+        
+        print "Array X is " , xFineArray 
+        print "Array Y is " , yFineArray
+        print "Array Z is " , zFineArray
+        
+        print "Creating mesh"
+        self.xMesh, self.yMesh, self.zMesh = np.meshgrid(xFineArray, yFineArray, zFineArray, indexing='ij', sparse=True ) 
+      
+        print "Filling the mesh "
+        self.ipCoarseData = interpolatingFunction((self.xMesh, self.yMesh, self.zMesh))
+        
+        # print self.ipCoarseData
+        
+        print "Interpolation is complete"
         return;
         
-    def writeFile(self, outFileName = None ):    
+    def writeFineFile(self, outFileName = None ):    
         self.outputFileName = outFileName     
         #Open output file
         if( self.outputFileName == None ) :
             outFileName2Use = "mergedData.table"
+        else :
+            outFileName2Use = outFileName 
+            
+        print "Opening file {0} for writing".format( outFileName2Use )    
+        try :
+            self.outFileHandle = open( outFileName2Use, "w" )
+        except IOError as err:
+            raise err
+         
+        # Loop over points within a coarse grid with fine grid steps and calculate the data from interpolation function or the fine grid      
+        ix=-1
+        for x in self.xMesh :
+            ix += 1
+            iy=-1            
+            for y in self.yMesh :
+                iy += 1 
+                iz=-1                
+                for z in self.zMesh :
+                    iz += 1
+                    if( self.fineGrid.xMin <= x and x <= self.fineGrid.xMax ) and ( self.fineGrid.yMin <= y and y <= self.fineGrid.yMax ) and ( self.fineGrid.zMin <= z and z <= self.fineGrid.zMax ) : 
+                        idxFineX = ( x - self.fineGrid.xMin ) / self.fineWidthX 
+                        idxFineY = ( y - self.fineGrid.yMin ) / self.fineWidthY 
+                        idxFineZ = ( z - self.fineGrid.zMin ) / self.fineWidthZ                     
+                        dataValue = self.fineGrid.data[idxFineX, idxFineY, idxFineZ]
+                    else :
+                        dataValue = self.ipCoarseData[ix,iy,iz]
+                    self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:10.4f}\n".format( x, y, z, GridMerger.gev2kw * dataValue[0] ) )
+
+                    
+        
+        self.outFileHandle.close()
+
+        return
+   
+    def writeCoarseFile(self, outFileName = None ):    
+        self.outputFileName = outFileName     
+        #Open output file
+        if( self.outputFileName == None ) :
+            outFileName2Use = "mergedData.csv"
         else :
             outFileName2Use = outFileName 
             
@@ -119,28 +178,44 @@ class GridMerger(object):
         except IOError as err:
             raise err
         
-        # Loop over points within a coarse grid with fine grid steps and calculate the data from interpolation function
-        for xLow in range( self.coarseGrid.xMin, self.coarseGrid.xMax,  self.fineWidthX ) :
-            x = xLow + 0.5 * self.fineWidthX            
-            for yLow in range( self.coarseGrid.yMin, self.coarseGrid.yMax,  self.fineWidthY ) :
-                y = yLow + 0.5 * self.fineWidthY                            
-                for zLow in range( self.coarseGrid.zMin, self.coarseGrid.zMax,  self.fineWidthZ ) :
-                    z = zLow + 0.5 * self.fineWidthZ     
+        xCoarseArray = np.linspace( self.coarseGrid.xMin + 0.5*self.coarseWidthX, self.coarseGrid.xMax - 0.5*self.coarseWidthX, self.coarseGrid.nX  )
+        yCoarseArray = np.linspace( self.coarseGrid.yMin + 0.5*self.coarseWidthY, self.coarseGrid.yMax - 0.5*self.coarseWidthY, self.coarseGrid.nY  )
+        zCoarseArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, self.coarseGrid.nZ  )
+
+
+        print xCoarseArray
+        print yCoarseArray
+        print zCoarseArray
+         
+        # Loop over points within a coarse grid with fine grid steps and calculate the data from interpolation function or the fine grid      
+        ix=-1
+        for x in xCoarseArray :
+            ix += 1
+            iy=-1
+            for y in yCoarseArray :
+                iy += 1 
+                iz=-1                
+                for z in zCoarseArray :
+                    iz += 1
+                    if not (( self.fineGrid.xMin <= x and x <= self.fineGrid.xMax ) and ( self.fineGrid.yMin <= y and y <= self.fineGrid.yMax ) and ( self.fineGrid.zMin <= z and z <= self.fineGrid.zMax )) : 
+                        dataValue = self.coarseGrid.data[ix,iy,iz]
+                        self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:12.6e}\n".format( x, y, z, GridMerger.gev2kw * dataValue ) )
+
+
+        for ix in range(self.fineGrid.nX) :
+            for iy in range(self.fineGrid.nY) :
+                for iz in range(self.fineGrid.nZ) :
+                    dataValue = self.fineGrid.data[ix, iy, iz]
                     
-                    if( self.fineData.xMin <= x and x<= self.fineData.xMax ): 
-                        idxFineX = ( xLow - self.fineGrid.xMin ) / self.fineWidthX 
-                        idxFineY = ( yLow - self.fineGrid.yMin ) / self.fineWidthY 
-                        idxFineZ = ( zLow - self.fineGrid.zMin ) / self.fineWidthZ 
-                        
-                        dataValue = self.fineGrid.data[idxFineX, idxFineY, idxFineZ]
-                        
-                    else :
-                        dataValue = self.extrapolatingFunction(x,y,z)
-                            
-                    self.outFileHandle.write( "{0} , \t{1} , \t{2} , \t{3}\n".format( x, y, z, GridMerger.gev2kw * dataValue ) )
+                    x = self.fineGrid.xMin + (ix+0.5) * self.fineWidthX   
+                    y = self.fineGrid.yMin + (iy+0.5) * self.fineWidthY   
+                    z = self.fineGrid.zMin + (iz+0.5) * self.fineWidthZ   
+
+                    self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:12.6e}\n".format( x, y, z, GridMerger.gev2kw * dataValue ) )
+                    
         
         self.outFileHandle.close()
 
         return
-   
+
         

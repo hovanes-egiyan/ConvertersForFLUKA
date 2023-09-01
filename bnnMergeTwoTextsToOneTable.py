@@ -127,7 +127,9 @@ if __name__ == '__main__':
     converterFine.readFile( inFileFineName )
     
     converterMerger = GridMerger( converterCoarse, converterFine )
-    converterMerger.interpolateData()
     
-    converterMerger.writeFile(outFileName)
+#    converterMerger.writeCoarseFile(outFileName)
+
+    converterMerger.interpolateData()
+    converterMerger.writeFineFile(outFileName)
     
