@@ -150,13 +150,13 @@ class GridMerger(object):
                 for z in self.zMesh :
                     iz += 1
                     if( self.fineGrid.xMin <= x and x <= self.fineGrid.xMax ) and ( self.fineGrid.yMin <= y and y <= self.fineGrid.yMax ) and ( self.fineGrid.zMin <= z and z <= self.fineGrid.zMax ) : 
-                        idxFineX = int( x - self.fineGrid.xMin ) / self.fineWidthX 
-                        idxFineY = int( y - self.fineGrid.yMin ) / self.fineWidthY 
-                        idxFineZ = int( z - self.fineGrid.zMin ) / self.fineWidthZ                     
+                        idxFineX = int( ( x - self.fineGrid.xMin ) / self.fineWidthX ) 
+                        idxFineY = int( ( y - self.fineGrid.yMin ) / self.fineWidthY )
+                        idxFineZ = int( ( z - self.fineGrid.zMin ) / self.fineWidthZ )                   
                         dataValue = self.fineGrid.data[idxFineX, idxFineY, idxFineZ]
                     else :
                         dataValue = self.ipCoarseData[ix,iy,iz]
-                    self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:10.4f}\n".format( x, y, z, GridMerger.gev2kw * dataValue[0] ) )
+                    self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:12.6f}\n".format( x, y, z, GridMerger.gev2kw * dataValue[0] ) )
 
                     
         
