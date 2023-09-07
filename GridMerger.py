@@ -106,9 +106,9 @@ class GridMerger(object):
         print ( self.coarseGrid.yMax, self.coarseGrid.yMin, self.fineGrid.nY )
         
         # Create mesh for the interpolation
-        xFineArray = np.linspace( self.coarseGrid.xMin + 0.5*self.coarseWidthX, self.coarseGrid.xMax - 0.5*self.coarseWidthX, (self.coarseGrid.xMax - self.coarseGrid.xMin ) / self.fineWidthX )
-        yFineArray = np.linspace( self.coarseGrid.yMin + 0.5*self.coarseWidthY, self.coarseGrid.yMax - 0.5*self.coarseWidthY, (self.coarseGrid.yMax - self.coarseGrid.yMin ) / self.fineWidthX )
-        zFineArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, (self.coarseGrid.zMax - self.coarseGrid.zMin ) / self.fineWidthX )
+        xFineArray = np.linspace( self.coarseGrid.xMin + 0.5*self.coarseWidthX, self.coarseGrid.xMax - 0.5*self.coarseWidthX, int( (self.coarseGrid.xMax - self.coarseGrid.xMin ) / self.fineWidthX ) )
+        yFineArray = np.linspace( self.coarseGrid.yMin + 0.5*self.coarseWidthY, self.coarseGrid.yMax - 0.5*self.coarseWidthY, int( (self.coarseGrid.yMax - self.coarseGrid.yMin ) / self.fineWidthX ) )
+        zFineArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, int( (self.coarseGrid.zMax - self.coarseGrid.zMin ) / self.fineWidthX ) )
         
         print ( "Array X is " , xFineArray ) 
         print ( "Array Y is " , yFineArray )
