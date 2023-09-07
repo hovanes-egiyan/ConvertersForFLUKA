@@ -128,8 +128,8 @@ if __name__ == '__main__':
     
     converterMerger = GridMerger( converterCoarse, converterFine )
     
-    converterMerger.writeCoarseFile(outFileName)
+#    converterMerger.writeCoarseFile(outFileName)
 
-#    converterMerger.interpolateData()
-#    converterMerger.writeFineFile(outFileName)
+    converterMerger.interpolateData()
+    converterMerger.writeFineFile(outFileName)
     

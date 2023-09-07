@@ -95,9 +95,9 @@ class Converter_FLUKA_BNN(object):
 
             vecElements = inputLine.split()
             for data in vecElements:
-                iz = iData / ( self.nX * self.nY )
-                iy = ( iData % ( self.nX * self.nY ) ) / self.nX 
-                ix = ( iData % ( self.nX * self.nY ) ) % self.nX 
+                iz = int( iData / ( self.nX * self.nY ) )
+                iy = int( ( iData % ( self.nX * self.nY ) ) / self.nX )
+                ix = int( ( iData % ( self.nX * self.nY ) ) % self.nX )
                 
 #                print ( "Point #{0} , ix={1}, iy={2}, iz={3}, value={4}".format(iData, ix, iy, iz, data ) )   
                 if( ix < self.nX and iy < self.nY and iz < self.nZ ) :            

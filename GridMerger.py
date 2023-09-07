@@ -73,7 +73,7 @@ class GridMerger(object):
     
     
     def isMultiple(self, x1, x2 ):
-        return ( abs( (x1/x2) - int(x1/x2) ) < GridMerger.diffToler )
+        return bool( abs( (x1/x2) - int(x1/x2) ) < GridMerger.diffToler )
     
     def interpolateData(self):
         '''
@@ -150,9 +150,9 @@ class GridMerger(object):
                 for z in self.zMesh :
                     iz += 1
                     if( self.fineGrid.xMin <= x and x <= self.fineGrid.xMax ) and ( self.fineGrid.yMin <= y and y <= self.fineGrid.yMax ) and ( self.fineGrid.zMin <= z and z <= self.fineGrid.zMax ) : 
-                        idxFineX = ( x - self.fineGrid.xMin ) / self.fineWidthX 
-                        idxFineY = ( y - self.fineGrid.yMin ) / self.fineWidthY 
-                        idxFineZ = ( z - self.fineGrid.zMin ) / self.fineWidthZ                     
+                        idxFineX = int( x - self.fineGrid.xMin ) / self.fineWidthX 
+                        idxFineY = int( y - self.fineGrid.yMin ) / self.fineWidthY 
+                        idxFineZ = int( z - self.fineGrid.zMin ) / self.fineWidthZ                     
                         dataValue = self.fineGrid.data[idxFineX, idxFineY, idxFineZ]
                     else :
                         dataValue = self.ipCoarseData[ix,iy,iz]
