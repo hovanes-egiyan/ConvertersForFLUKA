@@ -45,7 +45,7 @@ class Converter_FLUKA_BNN(object):
 
 
     def readFile(self, inFileName):
-        print "Opening file {0} for reading".format( inFileName)       
+        print ( "Opening file {0} for reading".format( inFileName) )       
         self.inputFileName =  inFileName    
         # Open input file
         try :
@@ -66,7 +66,7 @@ class Converter_FLUKA_BNN(object):
             if( lineNumber <= self.numberOfHeaderLines ) : 
 #                print " HEADER : " , inputLine
                 headerElements = inputLine.split()
-                print headerElements
+                print ( headerElements )
                 if( len(headerElements) >= 9 and headerElements[1] == "coordinate:" and  headerElements[2] == "from" ):
                     lowLim.append( float( headerElements[3] ) )
                     hiLim.append ( float( headerElements[5] ) )
@@ -87,10 +87,10 @@ class Converter_FLUKA_BNN(object):
                         self.data = numpy.zeros( (self.nX,self.nY,self.nZ) )
 
                     else :
-                        print "The data dimension in the header is not equal to 3. Exiting ..."
+                        print ( "The data dimension in the header is not equal to 3. Exiting ..." )
                         raise RuntimeError
 
-                    print self.nX, self.nY, self.nZ 
+                    print ( self.nX, self.nY, self.nZ ) 
                 continue 
 
             vecElements = inputLine.split()
@@ -99,7 +99,7 @@ class Converter_FLUKA_BNN(object):
                 iy = ( iData % ( self.nX * self.nY ) ) / self.nX 
                 ix = ( iData % ( self.nX * self.nY ) ) % self.nX 
                 
-#                print "Point #{0} , ix={1}, iy={2}, iz={3}, value={4}".format(iData, ix, iy, iz, data )   
+#                print ( "Point #{0} , ix={1}, iy={2}, iz={3}, value={4}".format(iData, ix, iy, iz, data ) )   
                 if( ix < self.nX and iy < self.nY and iz < self.nZ ) :            
                     self.data[ix,iy,iz] = data 
                 iData += 1
@@ -116,7 +116,7 @@ class Converter_FLUKA_BNN(object):
         else :
             outFileName2Use = outFileName 
             
-        print "Opening file {0} for writing".format( outFileName2Use)    
+        print ( "Opening file {0} for writing".format( outFileName2Use) )    
         try :
             self.outFileHandle = open( outFileName2Use, "w" )
         except IOError as err:

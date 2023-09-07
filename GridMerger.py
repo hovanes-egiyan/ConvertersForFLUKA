@@ -43,20 +43,20 @@ class GridMerger(object):
         self.fineWidthY = ( self.fineGrid.yMax - self.fineGrid.yMin ) / self.fineGrid.nY 
         self.fineWidthZ = ( self.fineGrid.zMax - self.fineGrid.zMin ) / self.fineGrid.nZ
    
-        print "Z sizes for coarse are ", self.coarseGrid.zMax, self.coarseGrid.zMin, self.coarseGrid.nZ, self.coarseWidthZ
-        print "Z sizes for fine are   ", self.fineGrid.zMax, self.fineGrid.zMin, self.fineGrid.nZ, self.fineWidthZ
+        print ( "X sizes for coarse are ", self.coarseGrid.xMax, self.coarseGrid.xMin, self.coarseGrid.nX, self.coarseWidthX )
+        print ( "X sizes for fine are   ", self.fineGrid.xMax, self.fineGrid.xMin, self.fineGrid.nX, self.fineWidthX )
   
-        print "The grid sizes are ", self.isMultiple(self.coarseWidthX, self.fineWidthX) , self.isMultiple(self.coarseWidthY, self.fineWidthY) , self.isMultiple(self.coarseWidthZ, self.fineWidthZ) , GridMerger.diffToler 
+        print ( "The grid sizes are ", self.isMultiple(self.coarseWidthX, self.fineWidthX) , self.isMultiple(self.coarseWidthY, self.fineWidthY) , self.isMultiple(self.coarseWidthZ, self.fineWidthZ) , GridMerger.diffToler )
    
         # Make sure the grids widths are multiples of each other, otherwise raise Exit exception        
         if  (not self.isMultiple(self.coarseWidthX, self.fineWidthX)) or (not self.isMultiple(self.coarseWidthY, self.fineWidthY)) or (not self.isMultiple(self.coarseWidthZ, self.fineWidthZ)):
-            print "The grid for the second converter is not a multiple of the first converter. Exiting ... "
+            print ("The grid for the second converter is not a multiple of the first converter. Exiting ... " )
             raise SystemExit
         
         
         # Make sure that the edges line up
         if (not self.isMultiple(abs(self.coarseGrid.xMin - self.fineGrid.xMin), self.fineWidthX)) or (not self.isMultiple(abs(self.coarseGrid.yMin - self.fineGrid.yMin), self.fineWidthY)) or (not self.isMultiple(abs(self.coarseGrid.zMin - self.fineGrid.zMin), self.fineWidthZ)):
-            print "The grid edges do not line up. Exiting ... "
+            print ( "The grid edges do not line up. Exiting ... " )
             raise SystemExit
           
   
@@ -79,7 +79,7 @@ class GridMerger(object):
         '''
         Setup interpolation function for the coarse grid
         '''
-        print "In the function to interpolate data"
+        print ( "In the function to interpolate data" )
 
 #        linearizedCoarseData = self.coarseData.reshape(-1)
         
@@ -96,33 +96,33 @@ class GridMerger(object):
         for iz in range(self.coarseGrid.nZ):
             zCoarse = self.coarseGrid.zMin + (iz+0.5) * self.coarseWidthZ
             zCoarseArray.append(zCoarse)                  
-        print xCoarseArray
-        print yCoarseArray
-        print zCoarseArray
-        print "Calling interpolating function"
+        print ( xCoarseArray )
+        print ( yCoarseArray )
+        print ( zCoarseArray )
+        print ( "Calling interpolating function" )
 #        self.interpolatingFunction = LinearNDInterpolator(list(zip(xCoarseArray, yCoarseArray,zCoarseArray)), linearizedCoarseData)
         interpolatingFunction = RegularGridInterpolator( (xCoarseArray, yCoarseArray,zCoarseArray), self.coarseData, method='linear', bounds_error=False, fill_value=0 )
         
-        print self.coarseGrid.yMax, self.coarseGrid.yMin, self.fineGrid.nY
+        print ( self.coarseGrid.yMax, self.coarseGrid.yMin, self.fineGrid.nY )
         
         # Create mesh for the interpolation
         xFineArray = np.linspace( self.coarseGrid.xMin + 0.5*self.coarseWidthX, self.coarseGrid.xMax - 0.5*self.coarseWidthX, (self.coarseGrid.xMax - self.coarseGrid.xMin ) / self.fineWidthX )
         yFineArray = np.linspace( self.coarseGrid.yMin + 0.5*self.coarseWidthY, self.coarseGrid.yMax - 0.5*self.coarseWidthY, (self.coarseGrid.yMax - self.coarseGrid.yMin ) / self.fineWidthX )
         zFineArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, (self.coarseGrid.zMax - self.coarseGrid.zMin ) / self.fineWidthX )
         
-        print "Array X is " , xFineArray 
-        print "Array Y is " , yFineArray
-        print "Array Z is " , zFineArray
+        print ( "Array X is " , xFineArray ) 
+        print ( "Array Y is " , yFineArray )
+        print ( "Array Z is " , zFineArray )
         
-        print "Creating mesh"
+        print ( "Creating mesh" )
         self.xMesh, self.yMesh, self.zMesh = np.meshgrid(xFineArray, yFineArray, zFineArray, indexing='ij', sparse=True ) 
       
-        print "Filling the mesh "
+        print ( "Filling the mesh " )
         self.ipCoarseData = interpolatingFunction((self.xMesh, self.yMesh, self.zMesh))
         
         # print self.ipCoarseData
         
-        print "Interpolation is complete"
+        print ( "Interpolation is complete" )
         return;
         
     def writeFineFile(self, outFileName = None ):    
@@ -133,7 +133,7 @@ class GridMerger(object):
         else :
             outFileName2Use = outFileName 
             
-        print "Opening file {0} for writing".format( outFileName2Use )    
+        print ( "Opening file {0} for writing".format( outFileName2Use ) )    
         try :
             self.outFileHandle = open( outFileName2Use, "w" )
         except IOError as err:
@@ -172,7 +172,7 @@ class GridMerger(object):
         else :
             outFileName2Use = outFileName 
             
-        print "Opening file {0} for writing".format( outFileName2Use)    
+        print ( "Opening file {0} for writing".format( outFileName2Use) )    
         try :
             self.outFileHandle = open( outFileName2Use, "w" )
         except IOError as err:
@@ -183,9 +183,9 @@ class GridMerger(object):
         zCoarseArray = np.linspace( self.coarseGrid.zMin + 0.5*self.coarseWidthZ, self.coarseGrid.zMax - 0.5*self.coarseWidthZ, self.coarseGrid.nZ  )
 
 
-        print xCoarseArray
-        print yCoarseArray
-        print zCoarseArray
+        print ( xCoarseArray )
+        print ( yCoarseArray )
+        print ( zCoarseArray )
          
         # Loop over points within a coarse grid with fine grid steps and calculate the data from interpolation function or the fine grid      
         ix=-1

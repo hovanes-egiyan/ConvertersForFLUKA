@@ -15,7 +15,7 @@ class CylindricalConverterCPSHC(Converter_FLUKA_BNN):
     Pavel uses for CPSHC project for Hall C. 
     '''
     def __init__( self ):
-        print "Using converter for Pavel's cylindrical reference system for Hall C"
+        print ( "Using converter for Pavel's cylindrical reference system for Hall C" )
         super(CylindricalConverterCPSHC, self).__init__()
         self.nX = 160           #nR
         self.nY = 144           #nPhi
@@ -35,7 +35,7 @@ class CylindricalConverterCPSHC(Converter_FLUKA_BNN):
     
     
     def writeFile(self, outFileName = None ):    
-        print "Will write assuming Pavel's cylindrical reference system for Hall C CPS"
+        print ( "Will write assuming Pavel's cylindrical reference system for Hall C CPS" )
         self.outputFileName = outFileName     
         #Open output file
         if( self.outputFileName == None ) :
@@ -43,7 +43,7 @@ class CylindricalConverterCPSHC(Converter_FLUKA_BNN):
         else :
             outFileName2Use = outFileName 
             
-        print "Opening file {0} for writing".format( outFileName2Use)    
+        print ( "Opening file {0} for writing".format( outFileName2Use) )    
         try :
             self.outFileHandle = open( outFileName2Use, "w" )
         except IOError as err:

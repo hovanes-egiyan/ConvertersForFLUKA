@@ -37,7 +37,7 @@ class clfOptions:
             # Get options from command line, may get overriden 
             self.parseCommandLine( argList )  
         except getopt.GetoptError as errMsg:
-            print errMsg
+            print ( errMsg )
             self.printHelpMessage()
             sys.exit(-1)
         return
@@ -45,7 +45,7 @@ class clfOptions:
     
     # Parse command file and append the option list extracted from the command file
     def parseCommandLine( self, argList ):
-        print "Starting command line parsing:", argList
+        print ( "Starting command line parsing:", argList )
         # Here I am using optparse module which may be obsolete in future Python versions 
         # This part might need to be redone for it to work with Python 3.1
         # Python does not seem to be forward or backward compatible
@@ -99,22 +99,22 @@ if __name__ == '__main__':
     inFileFineName   = progOpts.getOption( "InFileFine" )
     outFileName      = progOpts.getOption( "OutFile" )
     
-    print "Input file with coarse binning is {0} , Input file with fine binning is {1} , output file is {2}".format(inFileCoarseName, inFileFineName, outFileName )  
+    print ("Input file with coarse binning is {0} , Input file with fine binning is {1} , output file is {2}".format(inFileCoarseName, inFileFineName, outFileName ) )  
     
     if( progOpts.getOption("DataType") == "PavelCyl" ):
-        print "Pavel's KLCPS cylindrical coordinate system is expected now."
+        print ( "Pavel's KLCPS cylindrical coordinate system is expected now." )
         converterCoarse = CylindricalConverterKLCPS()
         converterFine = CylindricalConverterKLCPS()
     elif( progOpts.getOption("DataType") == "PavelRec" ):
-        print "Pavel's KLCPS rectangular coordinate system is expected now."        
+        print ( "Pavel's KLCPS rectangular coordinate system is expected now." )       
         converterCoarse = RectangularConverterKLCPS()
         converterFine = RectangularConverterKLCPS()
     elif( progOpts.getOption("DataType") == "PavelHC" ):
-        print "Pavel's HC CPS cylindrical coordinate system is expected now."        
+        print ( "Pavel's HC CPS cylindrical coordinate system is expected now." )     
         converterCoarse = CylindricalConverterCPSHC()
         converterFine = RectangularConverterKLCPS()
     elif( progOpts.getOption("DataType") == "VitalyCyl" ):
-        print "Vitaly's CPS cylindrical coordinate system is expected now."
+        print ( "Vitaly's CPS cylindrical coordinate system is expected now." )
         converterCoarse = CylindricalConverterVitalyCPS()
         converterFine = CylindricalConverterVitalyCPS()
               
@@ -128,8 +128,8 @@ if __name__ == '__main__':
     
     converterMerger = GridMerger( converterCoarse, converterFine )
     
-#    converterMerger.writeCoarseFile(outFileName)
+    converterMerger.writeCoarseFile(outFileName)
 
-    converterMerger.interpolateData()
-    converterMerger.writeFineFile(outFileName)
+#    converterMerger.interpolateData()
+#    converterMerger.writeFineFile(outFileName)
     

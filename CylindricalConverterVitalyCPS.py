@@ -15,7 +15,7 @@ class CylindricalConverterVitalyCPS(Converter_FLUKA_BNN):
     Pavel uses for KLCPS project in Hall D. 
     '''
     def __init__( self ):
-        print "Using converter for Vitalys's cylindrical reference system for Hall D"
+        print ( "Using converter for Vitalys's cylindrical reference system for Hall D" )
         super(CylindricalConverterVitalyCPS, self).__init__()
         self.nX = 440           #nR
         self.nY = 80            #nPhi
@@ -47,7 +47,7 @@ class CylindricalConverterVitalyCPS(Converter_FLUKA_BNN):
     
     
     def writeFile(self, outFileName = None ):    
-        print "Will write assuming Vitaly's cylindrical reference system for Hall D CPS"
+        print ( "Will write assuming Vitaly's cylindrical reference system for Hall D CPS" )
         self.outputFileName = outFileName     
         #Open output file
         if( self.outputFileName == None ) :
@@ -55,7 +55,7 @@ class CylindricalConverterVitalyCPS(Converter_FLUKA_BNN):
         else :
             outFileName2Use = outFileName 
             
-        print "Opening file {0} for writing".format( outFileName2Use)    
+        print ( "Opening file {0} for writing".format( outFileName2Use) )    
         try :
             self.outFileHandle = open( outFileName2Use, "w" )
         except IOError as err:
