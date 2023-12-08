@@ -118,8 +118,8 @@ class GridMerger(object):
         self.xMesh, self.yMesh, self.zMesh = np.meshgrid(xFineArray, yFineArray, zFineArray, indexing='ij', sparse=True ) 
       
         print ( "Filling the mesh " )
-        self.ipCoarseData = interpolatingFunction((self.xMesh, self.yMesh, self.zMesh))
-        
+#        self.ipCoarseData = interpolatingFunction((self.xMesh, self.yMesh, self.zMesh))
+              
         # print self.ipCoarseData
         
         print ( "Interpolation is complete" )
@@ -155,7 +155,8 @@ class GridMerger(object):
                         idxFineZ = int( ( z - self.fineGrid.zMin ) / self.fineWidthZ )                   
                         dataValue = self.fineGrid.data[idxFineX, idxFineY, idxFineZ]
                     else :
-                        dataValue = self.ipCoarseData[ix,iy,iz]
+#                        dataValue = self.ipCoarseData[ix,iy,iz]
+                        dataValue = -9999
                     self.outFileHandle.write( "{0:8.3f} , \t{1:8.3f} , \t{2:8.3f} , \t{3:12.6f}\n".format( x, y, z, GridMerger.gev2kw * dataValue[0] ) )
 
                     
